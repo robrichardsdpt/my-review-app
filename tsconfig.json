@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2022",
-    "module": "Node16",
     "declaration": true,
     "sourceMap": true,
-    "outDir": "./lib",
+    "outDir": "./lib", // This tells 'tsc' to put .js files in the /lib folder
+    "rootDir": "./src", // This tells 'tsc' where your source code is
+    "module": "node16", // Probot usually expects CommonJS for production
+    "target": "ES2022",
 
     /* Strict Type-Checking Options */
     "strict": true,
