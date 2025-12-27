@@ -12,8 +12,8 @@
     "probot-app"
   ],
   "scripts": {
-    "build": "tsc",
-    "start": "npm install && npm run build && node lib/index.js",
+    "build": "npm install && npx tsc",
+    "start": "npm run build && node lib/index.js",
     "test": "vitest"
   },
   "dependencies": {
