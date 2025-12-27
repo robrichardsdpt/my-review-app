@@ -12,21 +12,20 @@
     "probot-app"
   ],
   "scripts": {
-    "build": "npm install && tsc",
+    "build": "npm install --include=dev && tsc",
     "start": "npm run build && node lib/index.js",
     "test": "vitest"
   },
   "dependencies": {
     "@octokit/core": "^5.2.2",
     "openai": "^6.15.0",
-    "probot": "^13.4.5",
-    "tsc": "^2.0.4"
+    "probot": "^13.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "nock": "^14.0.5",
     "smee-client": "^2.0.0",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.3",
     "vitest": "^2.0.0"
   },
   "overrides": {
