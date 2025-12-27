@@ -12,14 +12,15 @@
     "probot-app"
   ],
   "scripts": {
-    "build": "npm install && npx tsc",
+    "build": "npm install && tsc",
     "start": "npm run build && node lib/index.js",
     "test": "vitest"
   },
   "dependencies": {
     "@octokit/core": "^5.2.2",
     "openai": "^6.15.0",
-    "probot": "^13.4.5"
+    "probot": "^13.4.5",
+    "tsc": "^2.0.4"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
