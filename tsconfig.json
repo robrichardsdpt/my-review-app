@@ -5,7 +5,7 @@
     "sourceMap": true,
     "outDir": "./lib", // This tells 'tsc' to put .js files in the /lib folder
     "rootDir": "./src", // This tells 'tsc' where your source code is
-    "module": "node16", // Probot usually expects CommonJS for production
+    "module": "CommonJS", // Probot usually expects CommonJS for production
     "target": "ES2022",
 
     /* Strict Type-Checking Options */
@@ -17,7 +17,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
-    "moduleResolution": "Node16",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true // <--- ESSENTIAL: Skips type checking of all .d.ts files
