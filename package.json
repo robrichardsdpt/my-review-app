@@ -12,7 +12,7 @@
     "probot-app"
   ],
   "scripts": {
-    "build": "npm install --include=dev && tsc --transpileOnly",
+    "build": "npm install --include=dev && tsc",
     "start": "npm run build && node lib/index.js",
     "test": "vitest"
   },
