@@ -11,4 +11,4 @@ RUN npm run build
 
 # Runtime
 ENV NODE_ENV="production"
-CMD ["node", "lib/index.js"]
+CMD ["node", "lib/server.js"]
