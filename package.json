@@ -1,5 +1,5 @@
 {
-  "name": "ReviewBot",
+  "name": "reviewbot",
   "version": "1.0.0",
   "private": true,
   "description": "Your robotic peer reviewer",
@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node lib/index.js",
+    "start": "node lib/index.js",
     "test": "vitest"
   },
   "dependencies": {
@@ -33,6 +33,5 @@
   },
   "engines": {
     "node": ">= 18"
-  },
-  "type": "module"
+  }
 }
