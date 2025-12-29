@@ -6,7 +6,12 @@ console.log("[reviewbot] starting Probot server bootstrap...");
 
 // createProbot() reads APP_ID, PRIVATE_KEY, WEBHOOK_SECRET, etc. from env
 const probot = createProbot();
-const middleware = createNodeMiddleware(app, { probot });
+// Mount middleware explicitly on the expected webhook route
+const webhookPath = "/api/github/webhooks";
+const middleware = createNodeMiddleware(app, {
+  probot,
+  webhooksPath: webhookPath,
+});
 
 const port = Number(process.env.PORT ?? 3000);
 
@@ -15,13 +20,11 @@ const server = createServer((req, res) => {
   const method = req.method ?? "?";
   const url = req.url ?? "?";
 
-  // Log every request (helps debug "nothing happens" situations)
   res.on("finish", () => {
     const ms = Date.now() - start;
     console.log(`[reviewbot] ${method} ${url} -> ${res.statusCode} (${ms}ms)`);
   });
 
-  // Health check endpoint for Render
   if (url === "/" || url === "/healthz") {
     res.statusCode = 200;
     res.setHeader("content-type", "text/plain; charset=utf-8");
@@ -29,13 +32,13 @@ const server = createServer((req, res) => {
     return;
   }
 
-  // Debug endpoint: lets you verify POST traffic reaches the service.
-  // This avoids GitHub signature requirements.
   if (url === "/debug" && method === "POST") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
     req.on("end", () => {
-      console.log(`[reviewbot] /debug payload (first 2KB): ${body.slice(0, 2048)}`);
+      console.log(
+        `[reviewbot] /debug payload (first 2KB): ${body.slice(0, 2048)}`
+      );
       res.statusCode = 200;
       res.setHeader("content-type", "application/json; charset=utf-8");
       res.end(JSON.stringify({ ok: true }));
@@ -50,12 +53,21 @@ const server = createServer((req, res) => {
     return;
   }
 
-  middleware(req, res, () => {
-    res.statusCode = 404;
-    res.end("not found");
-  });
+  // Only handle the webhook path; return 404 for everything else.
+  if (url?.startsWith(webhookPath)) {
+    middleware(req, res, () => {
+      res.statusCode = 404;
+      res.end("not found");
+    });
+    return;
+  }
+
+  res.statusCode = 404;
+  res.end("not found");
 });
 
 server.listen(port, "0.0.0.0", () => {
-  console.log(`[reviewbot] listening on http://0.0.0.0:${port}`);
+  console.log(
+    `[reviewbot] listening on http://0.0.0.0:${port} (webhooks: ${webhookPath})`
+  );
 });
