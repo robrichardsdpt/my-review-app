@@ -11,8 +11,18 @@ const middleware = createNodeMiddleware(app, { probot });
 const port = Number(process.env.PORT ?? 3000);
 
 const server = createServer((req, res) => {
+  const start = Date.now();
+  const method = req.method ?? "?";
+  const url = req.url ?? "?";
+
+  // Log every request (helps debug "nothing happens" situations)
+  res.on("finish", () => {
+    const ms = Date.now() - start;
+    console.log(`[reviewbot] ${method} ${url} -> ${res.statusCode} (${ms}ms)`);
+  });
+
   // Health check endpoint for Render
-  if (req.url === "/" || req.url === "/healthz") {
+  if (url === "/" || url === "/healthz") {
     res.statusCode = 200;
     res.setHeader("content-type", "text/plain; charset=utf-8");
     res.end("ok");
