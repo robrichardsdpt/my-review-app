@@ -1,13 +1,33 @@
 import { createServer } from "node:http";
 import app from "./index";
-import { createNodeMiddleware, createProbot } from "probot";
+import { createNodeMiddleware, Probot } from "probot";
+
+function requireEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing required environment variable: ${name}`);
+  return v;
+}
+
+function normalizePrivateKey(raw: string): string {
+  // Render often stores PEMs with literal "\n". Convert to real newlines.
+  let key = raw.replace(/\\n/g, "\n").trim();
+
+  // Ensure PEM ends with a newline; some parsers are picky.
+  if (!key.endsWith("\n")) key += "\n";
+
+  return key;
+}
 
 console.log("[reviewbot] starting Probot server bootstrap...");
 
-// createProbot() reads APP_ID, PRIVATE_KEY, WEBHOOK_SECRET, etc. from env
-const probot = createProbot();
-// Mount middleware explicitly on the expected webhook route
 const webhookPath = "/api/github/webhooks";
+
+const probot = new Probot({
+  appId: Number(requireEnv("APP_ID")),
+  privateKey: normalizePrivateKey(requireEnv("PRIVATE_KEY")),
+  secret: requireEnv("WEBHOOK_SECRET"),
+});
+
 const middleware = createNodeMiddleware(app, {
   probot,
   webhooksPath: webhookPath,
