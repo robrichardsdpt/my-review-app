@@ -29,6 +29,27 @@ const server = createServer((req, res) => {
     return;
   }
 
+  // Debug endpoint: lets you verify POST traffic reaches the service.
+  // This avoids GitHub signature requirements.
+  if (url === "/debug" && method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      console.log(`[reviewbot] /debug payload (first 2KB): ${body.slice(0, 2048)}`);
+      res.statusCode = 200;
+      res.setHeader("content-type", "application/json; charset=utf-8");
+      res.end(JSON.stringify({ ok: true }));
+    });
+    return;
+  }
+
+  if (url === "/debug" && method === "GET") {
+    res.statusCode = 200;
+    res.setHeader("content-type", "text/plain; charset=utf-8");
+    res.end("ok");
+    return;
+  }
+
   middleware(req, res, () => {
     res.statusCode = 404;
     res.end("not found");
